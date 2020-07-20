@@ -21,7 +21,7 @@ class HTML:
         html = "<html>\n"
         for child in self.children:
             html += str(child)
-        html += "\n</html>"
+        html += "</html>"
         return html
 
 
@@ -41,10 +41,10 @@ class TopLevelTag:
         pass
 
     def __str__(self):
-        html = "<%s>\n" % self.tag
+        html = f"<{self.tag}>\n"
         for child in self.children:
             html += "\t" + str(child) + "\n"
-        html += "\n</%s>\n" % self.tag
+        html += f"</{self.tag}>\n"
         return html
 
 
@@ -86,7 +86,7 @@ class Tag:
     def __str__(self):
         attrs = []
         for attribute, value in self.attributes.items():
-            attrs.append('%s="%s"' % (attribute, value))
+            attrs.append(f'{attribute}="{value}"')
         attrs = " ".join(attrs)
 
         if len(self.children) > 0:
@@ -101,7 +101,7 @@ class Tag:
                 internal = ""
             for child in self.children:
                 internal += "\n\t\t" + str(child)
-            ending = "\n\t</%s>" % self.tag
+            ending = f"\n\t</{self.tag}>"
             return opening + internal + ending
         else:
             if self.is_single and attrs:
@@ -115,7 +115,7 @@ class Tag:
 
 
 def main(output=None):
-    with HTML(output=output) as doc:
+    with HTML() as doc:
         with TopLevelTag("head") as head:
             with Tag("title") as title:
                 title.text = "hello"
@@ -126,6 +126,10 @@ def main(output=None):
             with Tag("h1", klass=("main-text",)) as h1:
                 h1.text = "Test"
                 body += h1
+
+            with Tag("hr", klass=("main-line", "sep-line")) as hr:
+                hr.text="sup"
+                body+=hr
 
             with Tag("div", klass=("container", "container-fluid"), id="lead") as div:
                 with Tag("p") as paragraph:
